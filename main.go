@@ -14,7 +14,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	fmt.Fprintf(w, "OTC-Hello-Server: %s\nTime: %v", hostname, time.Now().Local())
+	env, ok := os.LookupEnv("ENV_NAME")
+	if !ok {
+		env = "UNKNOWN"
+	}
+
+	fmt.Fprintf(w, "Hello, Open Telekom Cloud!\n\nHostname: %s\nTime: %v\nEnvironment: %s", hostname, time.Now().Local(), env)
 }
 
 func startServer() {
