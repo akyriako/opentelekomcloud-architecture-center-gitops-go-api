@@ -89,7 +89,7 @@ jobs:
 
       # Build & Push in both repos
       - name: Build image and push to Docker Hub and Open Telekom Cloud SWR
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           # relative path to the place where source code with Dockerfile is located
           context: .
