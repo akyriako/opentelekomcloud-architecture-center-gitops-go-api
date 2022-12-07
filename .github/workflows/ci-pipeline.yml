@@ -53,7 +53,7 @@ jobs:
         
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v4.1.1
         with:
           images: |
             ${{ secrets.DOCKERHUB_USERNAME }}/otc-hello-server
@@ -64,6 +64,8 @@ jobs:
             type=semver,pattern={{version}},priority=300
             type=semver,pattern={{major}}.{{minor}},priority=310
             type=sha,priority=100
+          flavor: |
+            latest=true
 
       # setup Docker build action
       - name: Set up Docker Buildx
