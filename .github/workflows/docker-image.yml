@@ -59,8 +59,11 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/otc-hello-server
             ${{ secrets.OTCSWR_URL}}/${{ secrets.OTCSWR_ORG}}/otc-hello-server
           tags: |
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{version}}
+            type=ref,event=branch,priority=200
+            type=ref,event=pr,priority=210
+            type=semver,pattern={{version}},priority=110
+            type=semver,pattern={{major}}.{{minor}},priority=100
+            type=sha,priority=300
 
       # setup Docker build action
       - name: Set up Docker Buildx
