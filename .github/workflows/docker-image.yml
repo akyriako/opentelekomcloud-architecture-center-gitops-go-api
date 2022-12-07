@@ -1,34 +1,53 @@
-name: Docker Image CI
+name: Build and Publish
 
 on:
+  # run it on push to the default repository branch
   push:
-    branches: [ "main" ]
+    branches: [main]
+  # run it during pull request
   pull_request:
-    branches: [ "main" ]
 
 jobs:
-
-  build:
-
+  # define job to build and publish docker image
+  build-and-push-docker-image:
+    name: Build Docker image and push to repositories
+    # run only when code is compiling and tests are passing
     runs-on: ubuntu-latest
 
+    # steps to perform in job
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-     
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-    
-    - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/otc-hello-server:latest
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # setup Docker buld action
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to Open Telekom Cloud SWR
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.OTCSWR_URL}}
+          username: ${{ secrets.OTCSWR_USERNAME }}
+          password: ${{ secrets.OTCSWR_TOKEN }}
+      
+      - name: Build image and push to Docker Hub and Open Telekom Cloud SWR
+        uses: docker/build-push-action@v2
+        with:
+          # relative path to the place where source code with Dockerfile is located
+          context: ./src/samples/simple
+          # Note: tags has to be all lower-case
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/otc-hello-server:latest 
+            ${{ secrets.OTCSWR_URL}}/${{ secrets.OTCSWR_ORG}}/otc-hello-server:latest 
+          # build on feature branches, push only on main branch
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
