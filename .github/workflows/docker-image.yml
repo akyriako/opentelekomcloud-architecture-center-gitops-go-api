@@ -13,6 +13,7 @@ jobs:
 
   # define job to build go project
   build-src:
+    name: Build Sources
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
