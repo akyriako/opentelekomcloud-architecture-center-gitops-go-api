@@ -67,6 +67,14 @@ jobs:
           flavor: |
             latest=true
 
+      - name: Build bake
+        uses: docker/bake-action@v2
+        with:
+          files: |
+            ./docker-bake.hcl
+            ${{ steps.meta.outputs.bake-file }}
+            targets: build
+
       # setup Docker build action
       - name: Set up Docker Buildx
         id: buildx
