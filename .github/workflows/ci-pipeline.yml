@@ -61,9 +61,9 @@ jobs:
           tags: |
             type=ref,event=branch,priority=200
             type=ref,event=pr,priority=210
-            type=semver,pattern={{version}},priority=110
-            type=semver,pattern={{major}}.{{minor}},priority=100
-            type=sha,priority=300
+            type=semver,pattern={{version}},priority=300
+            type=semver,pattern={{major}}.{{minor}},priority=310
+            type=sha,priority=100
 
       # setup Docker build action
       - name: Set up Docker Buildx
