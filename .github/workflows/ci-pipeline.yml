@@ -89,6 +89,7 @@ jobs:
 
       # Build & Push in both repos
       - name: Build image and push to Docker Hub and Open Telekom Cloud SWR
+        id: build_push
         uses: docker/build-push-action@v3
         with:
           # relative path to the place where source code with Dockerfile is located
@@ -98,7 +99,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
-          labels: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+        run: echo ${{ steps.build_push.outputs.digest }}
