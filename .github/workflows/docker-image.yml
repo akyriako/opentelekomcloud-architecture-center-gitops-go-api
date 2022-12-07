@@ -31,4 +31,4 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: akyriako78/otc-hello-server:latest
+        tags: ${{ secrets.DOCKER_USER }}/otc-hello-server:latest
