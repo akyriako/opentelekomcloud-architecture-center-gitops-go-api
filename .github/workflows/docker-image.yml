@@ -61,8 +61,6 @@ jobs:
           tags: |
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{version}}
-            type=ref,event=branch
-            type=ref,event=pr
 
       # setup Docker build action
       - name: Set up Docker Buildx
