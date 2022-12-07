@@ -56,7 +56,7 @@ jobs:
           else
             TAGS='["latest"]'
           fi
-          echo '::set-output name=tags::'$TAGS
+          echo "name='${TAGS}'" >> $GITHUB_OUTPUT
 
       # setup Docker build action
       - name: Set up Docker Buildx
