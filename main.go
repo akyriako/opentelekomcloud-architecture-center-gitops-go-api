@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -19,14 +20,23 @@ func index(w http.ResponseWriter, r *http.Request) {
 		env = "UNKNOWN"
 	}
 
-	fmt.Fprintf(w, "Hello, Open Telekom Cloud!\n\nHostname: %s\nTime: %v\nEnvironment: %s", hostname, time.Now().Local(), env)
+	fmt.Fprintf(w, "Hello, Open Telekom Cloud!\n\nHostname: %s\nTime: %v\nEnvironment: %s\n\n", hostname, time.Now().Local(), env)
 }
 
-func startServer() {
+func startServer(port int) {
+	log.Printf("Listening and Serve at :%d", port)
+
 	http.HandleFunc("/", index)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
 
 func main() {
-	startServer()
+	httpPort, ok := os.LookupEnv("HTTP_PORT")
+	if !ok {
+		httpPort = "8080"
+	}
+
+	if port, err := strconv.Atoi(httpPort); err == nil {
+		startServer(port)
+	}
 }
