@@ -77,10 +77,11 @@ jobs:
           file: ./Dockerfile
           # Note: tags has to be all lower-case
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/otc-hello-server:latest 
-            ${{ secrets.OTCSWR_URL}}/${{ secrets.OTCSWR_ORG}}/otc-hello-server:latest 
+            ${{ secrets.DOCKERHUB_USERNAME }}/otc-hello-server:${{ steps.meta.outputs.tags }} 
+            ${{ secrets.OTCSWR_URL}}/${{ secrets.OTCSWR_ORG}}/otc-hello-server:${{ steps.meta.outputs.tags }} 
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
+          labels: ${{ steps.meta.outputs.tags }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
