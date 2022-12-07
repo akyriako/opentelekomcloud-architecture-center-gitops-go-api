@@ -48,13 +48,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      - name: Generate Tag
+      - name: Generate Tags
         id: gen_tags
         run: |
           if [[ $GITHUB_REF == 'refs/tags/'* ]]; then
-            TAGS='["user/image:latest","user/image:'${GITHUB_REF/refs\/tags\//}'"]'
+            TAGS='["latest","'${GITHUB_REF/refs\/tags\//}'"]'
           else
-            TAGS='["user/image:latest"]'
+            TAGS='["latest"]'
           fi
           echo '::set-output name=tags::'$TAGS
 
