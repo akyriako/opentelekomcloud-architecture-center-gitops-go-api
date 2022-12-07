@@ -4,6 +4,8 @@ on:
   # run it on push to the default repository branch
   push:
     branches: [main]
+    tags:
+      - 'v*'
   # run it during pull request
   pull_request:
 
@@ -48,15 +50,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         
-      - name: Generate Tags
-        id: gen_tags
-        run: |
-          if [[ $GITHUB_REF == 'refs/tags/'* ]]; then
-            TAGS='["latest","'${GITHUB_REF/refs\/tags\//}'"]'
-          else
-            TAGS='["latest"]'
-          fi
-          echo "name='${TAGS}'" >> $GITHUB_OUTPUT
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/otc-hello-server
+            ${{ secrets.OTCSWR_URL}}/${{ secrets.OTCSWR_ORG}}/otc-hello-server
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
 
       # setup Docker build action
       - name: Set up Docker Buildx
@@ -86,9 +91,7 @@ jobs:
           context: .
           file: ./Dockerfile
           # Note: tags has to be all lower-case
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/otc-hello-server:${{ steps.meta.outputs.tags }} 
-            ${{ secrets.OTCSWR_URL}}/${{ secrets.OTCSWR_ORG}}/otc-hello-server:${{ steps.meta.outputs.tags }} 
+          tags: ${{ steps.meta.outputs.tags }}
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
           labels: ${{ steps.meta.outputs.tags }}
