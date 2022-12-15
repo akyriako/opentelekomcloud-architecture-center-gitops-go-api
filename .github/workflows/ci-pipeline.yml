@@ -82,7 +82,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Login to OTC-SWR
+       # Login to OTC-SWR
 #       - name: Login to Open Telekom Cloud SWR
 #         uses: docker/login-action@v2
 #         with:
